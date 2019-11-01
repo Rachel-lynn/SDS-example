@@ -1,0 +1,35 @@
+library(mgcv)
+library(dplR)
+sample.data<-read.csv("Sampledata.csv")
+sample.rwl<-read.rwl("Samplerwl.rwl")
+po<-read.csv("PO.csv")
+###See help("missing.data") for missing data protocol (“idx”, “mx”, "treeage.d" etc.) 
+aged<-which(!is.na(sample.data$age))
+unaged<-which(is.na(sample.data$age))
+  #SDS
+sds<-gam(ringwidth~s(diam), data=sample.data, method="REML")
+sds.chron<-aggregate(sds$residuals~sample.data$Year, FUN="tbrm")
+  #RCS
+rcs<-gam(ringwidth ~s(age), data=sample.data, method="REML")
+rcs.chron<-aggregate(rcs$residuals~sample.data$Year[aged], FUN="tbrm")
+  #COMB
+if (length(unaged)>0){
+comb<-gam(ringwidth~s(diam)+s(treeag.d, by=ordered(!mx)), data=sample.data, method="REML")
+ comb.chron<-aggregate(comb$residuals~sample.data$Year, FUN="tbrm")
+  } else {
+  comb<-gam(RW~s(diam)+s(age), data=sample.data, method="REML")
+  comb.chron<-aggregate(comb$residuals~sample.data$Year[aged], FUN="tbrm")
+}
+  #Conservative detrending
+CD.chron<-chron(detrend(sample.rwl, method="Spline", difference=T))
+  #C method- "Cmeth.sub" function available in Supplement. S4
+CM.chron<-chron(Cmeth.sub(sample.rwl, po))
+  #BAI
+BAI.chron<-chron(bai.in(sample.rwl))
+##plotting chronologies
+plot(sds.chron[,2]~sds.chron[,1], type="l", ylim=c(-1,1), col="forestgreen")
+lines(rcs.chron[,2]~rcs.chron[,1], col="dodgerblue")
+lines(comb.chron[,2]~comb.chron[,1], col="purple")
+lines(CD.chron$xxxstd~as.numeric(rownames(CD.chron)), col="orange")
+lines(CM.chron$xxxstd~as.numeric(rownames(CM.chron)), col="yellow")
+plot.crn(BAI.chron)
