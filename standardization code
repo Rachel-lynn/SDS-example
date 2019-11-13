@@ -14,7 +14,7 @@ rcs<-gam(ringwidth ~s(age), data=sample.data, method="REML")
 rcs.chron<-aggregate(rcs$residuals~sample.data$Year[aged], FUN="tbrm")
   #COMB
 if (length(unaged)>0){
-comb<-gam(ringwidth~s(diam)+s(treeag.d, by=ordered(!mx)), data=sample.data, method="REML")
+comb<-gam(ringwidth~s(diam)+s(treeage.d, by=ordered(!mx)), data=sample.data, method="REML")
  comb.chron<-aggregate(comb$residuals~sample.data$Year, FUN="tbrm")
   } else {
   comb<-gam(RW~s(diam)+s(age), data=sample.data, method="REML")
