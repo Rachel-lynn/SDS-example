@@ -1,5 +1,9 @@
 ### Modified from "cms" function in dplR, Bunn, A., Korpela, M., Biondi, F., Campelo, F., Mérian, P., Qeadan, F., Zang, C., Pucha-Cofrep, D. and Wernicke, J. dplR: Dendrochronology Program Library in R. R package version 1.6.9, 2018.
 library(dplR)
+##required functions
+yr.range<-getAnywhere(yr.range)$objs[[1]]
+sortByIndex<-getAnywhere(sortByIndex)$objs[[1]]
+
 Cmeth.sub<-function (rwl, po, c.hat.t = FALSE, c.hat.i = FALSE) 
 {
   biologicalTrend <- function(tt, theDat.2) {
